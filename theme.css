@@ -139,6 +139,9 @@ body {
   --blockquote-border-color: var(--nc-link);
   --blockquote-color: var(--nc-muted);
 
+  /* Obsidian's default is --text-muted, which sits a visible step lighter
+     than the canvas ink; panels carry the same --nc-primary as body text. */
+  --nav-item-color: var(--nc-primary);
   --nav-item-color-active: var(--nc-nav-active);
   --nav-item-background-active: var(--nc-bg-control);
   --titlebar-background: var(--nc-bg-body);
