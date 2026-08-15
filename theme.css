@@ -189,9 +189,17 @@ body {
   --radius-m: 0.25rem;
   --radius-l: 0.75rem;
 
+  /* File explorer and outline both size off .tree-item-self, which reads this;
+     Obsidian's default is --font-ui-small (13px) against a 17px canvas. */
+  --nav-item-size: var(--font-text-size);
+
   --bold-weight: 600;
   --list-indent: 1.5rem;
-  --list-spacing: 0.5em;
+  /* Obsidian applies --list-spacing as padding on *both* sides of every item
+     (and of every .HyperMD-list-line), and padding does not collapse — so the
+     gap between two items is twice this. Half a 1.75 line is 0.875em, hence
+     0.4375em here. Kosmos itself runs tighter, at a collapsed 0.5em margin. */
+  --list-spacing: 0.4375em;
   --blockquote-border-thickness: 3px;
   --blockquote-font-style: italic;
   --blockquote-background-color: transparent;
@@ -283,30 +291,47 @@ body {
    (the canvas's signature move); the underline is h2's alone and marks the
    major section break. The canvas gutter is a constant 3rem, so there is
    always room for the hang. */
+.markdown-rendered :is(h1, h2, h3) {
+  margin-left: -1rem;
+}
+
 .markdown-rendered h2 {
   border-bottom: 1px solid var(--nc-border-medium);
-  margin-left: -1rem;
   padding-bottom: 0.25rem;
 }
 
-.markdown-rendered h3 {
-  margin-left: -1rem;
+/* Live preview.
+
+   Obsidian spaces headings with padding on the .cm-line rather than margins,
+   so the ramp is restated rather than inherited — but it cannot simply be
+   repeated. The editor renders a blank markdown line as a real .cm-line, one
+   full line tall, which reading view has no equivalent for. Stacked on top of
+   the padding, that put a whole extra line of air around every heading.
+
+   Kosmos has the same problem and answers it the same way, collapsing empty
+   paragraphs (`.ProseMirror > p:has(> br:only-child) { line-height: 1 }`).
+   Doing that here leaves a blank line 1rem tall, so every value below is its
+   reading-view counterpart less that 1rem, and the two views land on the same
+   measurement: 40 / 36 / 32 / 32 / 28px above, 20px below.
+
+   Written with no blank line above it, a heading loses that 1rem — the ramp
+   still reads, just tighter. */
+.markdown-source-view.mod-cm6 .cm-line:has(> br:only-child) {
+  line-height: 1;
 }
 
-/* Live preview — Obsidian spaces headings with padding on the .cm-line rather
-   than margins, so the ramp is restated here instead of inherited. */
 /* Tracking is already carried by --hN-letter-spacing, which .HyperMD-header-N
    reads the same way .markdown-rendered hN does. */
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header {
-  padding-bottom: 1.25rem;
+  padding-bottom: 0.25rem;
 }
 
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-1 { padding-top: 2.5rem; }
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2 { padding-top: 2.25rem; }
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-3 { padding-top: 2rem; }
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-4 { padding-top: 2rem; }
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-5 { padding-top: 1.75rem; }
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-6 { padding-top: 1.75rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-1 { padding-top: 1.5rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2 { padding-top: 1.25rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-3 { padding-top: 1rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-4 { padding-top: 1rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-5 { padding-top: 0.75rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-6 { padding-top: 0.75rem; }
 
 /* The gutter hang has to be forced here. Obsidian pins every direct child of
    .cm-content — so every .cm-line — with
@@ -321,6 +346,7 @@ body {
    edge a rem short of the body text. Widening by the same rem pins the right
    edge and lets the outdent come entirely off the left, which is what the
    unconstrained block in Kosmos does naturally. */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-1,
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2,
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-3 {
   margin-left: -1rem !important;
@@ -329,27 +355,17 @@ body {
 
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2 {
   border-bottom: 1px solid var(--nc-border-medium);
-  padding-bottom: 0.25rem;
 }
 
-/* h2's 1.25rem of breathing room has to move to the following line, since the
-   border claimed the header line's own padding-bottom.
-
-   The two :not()s are carried over from the Obsidian rule this overrides —
-
-     .cm-s-obsidian .cm-line.HyperMD-header
-       + .cm-line:not(.HyperMD-header):not(:has(>br:only-child))
-       { padding-top: var(--p-spacing-empty) }
-
-   at (0,6,0), which outranks the plain `.HyperMD-header-2 + .cm-line` form.
-   Repeating its shape both wins the cascade and keeps its exclusions: a
-   heading following a heading takes its own padding-top, and a blank line
-   stays tight. */
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2
-  + .cm-line:not(.HyperMD-header):not(:has(> br:only-child)) {
-  padding-top: 1.25rem;
-}
-
+/* Stacked headings have no blank line between them to supply the 1rem the
+   values above subtract, so they take the full reading-view figure instead.
+   (Margin is not an option here — see the !important note above.) */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-1 { padding-top: 2.5rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-2 { padding-top: 2.25rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-3 { padding-top: 2rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-4 { padding-top: 2rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-5 { padding-top: 1.75rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-6 { padding-top: 1.75rem; }
 
 /* -----------------------------------------------------------------------------
    Note title — Kosmos .note-header .note-title-input
