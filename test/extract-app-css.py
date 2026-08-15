@@ -62,14 +62,35 @@ def main():
     base = 16 + jlen
     base += (4 - base % 4) % 4
 
-    out = pathlib.Path(__file__).parent / "app.css"
+    here = pathlib.Path(__file__).parent
+    found_css = False
+    fonts = 0
+
     for name, meta in walk(header):
+        # app.css refers to its fonts as public/fonts/<hash>.woff2, relative to
+        # itself — so extracting them to the matching path makes the harness
+        # render in Obsidian's bundled Inter. Without them it falls back to a
+        # face with no variable weight axis, and every heading weight lies.
+        keep = name.endswith("app.css") or (
+            "public/fonts/" in name and name.endswith((".woff2", ".ttf"))
+        )
+        if not keep:
+            continue
+        # Keep the archive's own layout: app.css sits at the root and its fonts
+        # at public/fonts/, which is exactly the relative path it asks for.
+        out = here / name
+        out.parent.mkdir(parents=True, exist_ok=True)
+        off, size = base + int(meta["offset"]), int(meta["size"])
+        out.write_bytes(data[off : off + size])
         if name.endswith("app.css"):
-            off, size = base + int(meta["offset"]), int(meta["size"])
-            out.write_bytes(data[off : off + size])
+            found_css = True
             print(f"{asar}\n  -> {out} ({size:,} bytes)")
-            return
-    sys.exit("no app.css inside that asar")
+        else:
+            fonts += 1
+
+    if not found_css:
+        sys.exit("no app.css inside that asar")
+    print(f"  -> {fonts} font file(s) under {here / 'public/fonts'}")
 
 
 if __name__ == "__main__":
