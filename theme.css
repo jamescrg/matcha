@@ -295,6 +295,26 @@ body {
   margin-top: var(--heading-spacing);
 }
 
+/* Adjacent headings sit one text-gap apart, not a full section break — the
+   ramp above is for a heading opening a section of prose; a subordinate
+   heading directly under its parent reads as the start of that section's
+   content. Zeroing margin-top lets the preceding heading's 1.25rem
+   margin-bottom supply the whole (collapsed) gap, the same 20px a paragraph
+   gets — and the same figure Obsidian itself already produces in live
+   preview when a blank line separates two headings.
+
+   Reading view wraps each block in a div (.el-h2, .el-h3, …), so heading
+   elements are never siblings there — the wrappers are; margins still
+   collapse through them. The bare-sibling form covers callouts and embeds,
+   which have no wrappers. */
+.markdown-rendered :is(h1, h2, h3, h4, h5, h6) + :is(h1, h2, h3, h4, h5, h6),
+.markdown-rendered
+  :is(.el-h1, .el-h2, .el-h3, .el-h4, .el-h5, .el-h6)
+  + :is(.el-h1, .el-h2, .el-h3, .el-h4, .el-h5, .el-h6)
+  > :is(h1, h2, h3, h4, h5, h6) {
+  margin-top: 0;
+}
+
 /* h2 and h3 both hang 1rem into the gutter, aligning with the title outdent
    (the canvas's signature move); the underline is h2's alone and marks the
    major section break. The canvas gutter is a constant 3rem, so there is
@@ -365,15 +385,15 @@ body {
   border-bottom: 1px solid var(--nc-border-medium);
 }
 
-/* Stacked headings have no blank line between them to supply the 1rem the
-   values above subtract, so they take the full reading-view figure instead.
-   (Margin is not an option here — see the !important note above.) */
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-1 { padding-top: 2.5rem; }
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-2 { padding-top: 2.25rem; }
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-3 { padding-top: 2rem; }
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-4 { padding-top: 2rem; }
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-5 { padding-top: 1.75rem; }
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-6 { padding-top: 1.75rem; }
+/* Adjacent headings: one text-gap, matching reading view's collapsed margin.
+   0.25rem padding-bottom on the line above + 1rem here = 1.25rem = 20px.
+   Obsidian's own rule already zeroes the padding-top of a heading that
+   follows a heading *with a blank line between*, and there the blank line
+   (1rem) plus the 0.25rem land on the same figure. (Margin is not an option
+   here — see the !important note above.) */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header {
+  padding-top: 1rem;
+}
 
 /* -----------------------------------------------------------------------------
    Note title — Kosmos .note-header .note-title-input
