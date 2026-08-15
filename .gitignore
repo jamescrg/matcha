@@ -1,2 +1,6 @@
 .DS_Store
 *.swp
+
+# Obsidian's own stylesheet, extracted locally for the test harness.
+# Obsidian copyright — never commit it.
+test/app.css

@@ -1,0 +1,108 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="../theme.css">
+<style>
+  body { margin: 0; }
+  .pane { width: 900px; position: relative; border-bottom: 2px dashed red; }
+  .label { position: absolute; top: 2px; right: 4px; font: 11px monospace; color: red; z-index: 99; }
+  .cm-content { flex-grow: 1; }
+</style>
+</head>
+<body class="theme-light">
+
+<!-- ============ READING VIEW ============ -->
+<div class="pane"><span class="label">READING VIEW</span>
+<div class="workspace-leaf-content"><div class="view-content">
+  <div class="markdown-reading-view">
+  <div class="markdown-preview-view markdown-rendered is-readable-line-width allow-fold-headings allow-fold-lists">
+    <div class="markdown-preview-sizer markdown-preview-section">
+      <div class="markdown-preview-pusher"></div>
+      <div class="el-p"><p id="rv-p1">Paragraph before the h1.</p></div>
+      <div class="el-h1"><h1 id="rv-h1">H1 heading</h1></div>
+      <div class="el-p"><p id="rv-p2">Paragraph after the h1.</p></div>
+      <div class="el-h2"><h2 id="rv-h2">H2 heading</h2></div>
+      <div class="el-p"><p id="rv-p3">Paragraph after the h2.</p></div>
+      <div class="el-ul"><ul>
+        <li id="rv-li1">First list item</li>
+        <li id="rv-li2">Second list item</li>
+        <li id="rv-li3">Third list item</li>
+      </ul></div>
+    </div>
+  </div></div>
+</div></div>
+</div>
+
+<!-- ============ LIVE PREVIEW ============ -->
+<!-- Blank markdown lines are real .cm-line elements here; reading view has no
+     equivalent, which is the whole reason the two drift apart. -->
+<div class="pane"><span class="label">LIVE PREVIEW</span>
+<div class="workspace-leaf-content"><div class="view-content">
+  <div class="markdown-source-view cm-s-obsidian mod-cm6 is-readable-line-width is-live-preview">
+    <div class="cm-editor"><div class="cm-scroller"><div class="cm-sizer"><div class="cm-contentContainer">
+      <div class="cm-content">
+        <div class="cm-line" id="lp-p1">Paragraph before the h1.</div>
+        <div class="cm-line"><br></div>
+        <div class="cm-line HyperMD-header HyperMD-header-1" id="lp-h1">H1 heading</div>
+        <div class="cm-line"><br></div>
+        <div class="cm-line" id="lp-p2">Paragraph after the h1.</div>
+        <div class="cm-line"><br></div>
+        <div class="cm-line HyperMD-header HyperMD-header-2" id="lp-h2">H2 heading</div>
+        <div class="cm-line"><br></div>
+        <div class="cm-line" id="lp-p3">Paragraph after the h2.</div>
+        <div class="cm-line"><br></div>
+        <div class="cm-line HyperMD-list-line HyperMD-list-line-1" id="lp-li1"><span class="cm-formatting-list">- </span>First list item</div>
+        <div class="cm-line HyperMD-list-line HyperMD-list-line-1" id="lp-li2"><span class="cm-formatting-list">- </span>Second list item</div>
+        <div class="cm-line HyperMD-list-line HyperMD-list-line-1" id="lp-li3"><span class="cm-formatting-list">- </span>Third list item</div>
+      </div>
+    </div></div></div></div>
+  </div>
+</div></div>
+</div>
+
+<script>
+addEventListener('load', () => {
+  const out = [];
+  const R = id => document.getElementById(id).getBoundingClientRect();
+  // Visual whitespace between text, i.e. content box to content box. Padding
+  // lives inside the border box, so rect-to-rect hides it and reports 0.
+  const gap = (label, a, b) => {
+    const ea = document.getElementById(a), eb = document.getElementById(b);
+    const bottom = ea.getBoundingClientRect().bottom
+                 - parseFloat(getComputedStyle(ea).paddingBottom);
+    const top = eb.getBoundingClientRect().top
+              + parseFloat(getComputedStyle(eb).paddingTop);
+    out.push(`${label.padEnd(22)} ${(top - bottom).toFixed(1)}px`);
+  };
+  const left = (label, id) =>
+    out.push(`${label.padEnd(22)} left=${R(id).left.toFixed(1)}px`);
+
+  const em = parseFloat(getComputedStyle(document.getElementById('rv-p1')).fontSize);
+  out.push(`1em = ${em.toFixed(1)}px, one line @1.75 = ${(em*1.75).toFixed(1)}px`);
+
+  out.push('--- READING VIEW: gaps ---');
+  gap('p1 -> h1', 'rv-p1', 'rv-h1');
+  gap('h1 -> p2', 'rv-h1', 'rv-p2');
+  gap('p2 -> h2', 'rv-p2', 'rv-h2');
+  gap('h2 -> p3', 'rv-h2', 'rv-p3');
+  gap('li1 -> li2', 'rv-li1', 'rv-li2');
+  gap('li2 -> li3', 'rv-li2', 'rv-li3');
+  out.push('--- READING VIEW: outdent ---');
+  left('p1', 'rv-p1'); left('h1', 'rv-h1'); left('h2', 'rv-h2');
+
+  out.push('--- LIVE PREVIEW: gaps (incl. blank lines) ---');
+  gap('p1 -> h1', 'lp-p1', 'lp-h1');
+  gap('h1 -> p2', 'lp-h1', 'lp-p2');
+  gap('p2 -> h2', 'lp-p2', 'lp-h2');
+  gap('h2 -> p3', 'lp-h2', 'lp-p3');
+  gap('li1 -> li2', 'lp-li1', 'lp-li2');
+  gap('li2 -> li3', 'lp-li2', 'lp-li3');
+  out.push('--- LIVE PREVIEW: outdent ---');
+  left('p1', 'lp-p1'); left('h1', 'lp-h1'); left('h2', 'lp-h2');
+
+  const pre = document.createElement('pre');
+  pre.id = 'results'; pre.textContent = out.join('\n');
+  document.body.appendChild(pre);
+});
+</script>
+</body></html>
