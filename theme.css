@@ -1,0 +1,305 @@
+/* =============================================================================
+   Note Canvas — an Obsidian port of the Kosmos note canvas
+   https://github.com/Kosmos-Law/kosmos
+     static/css/palette.css        → palette tokens
+     static/css/colors.css         → semantic tokens
+     static/css/apps/notes.css     → the canvas / paper page
+     static/css/apps/notes-editor.css → prose inside the canvas
+
+   Colours are kept in OKLCH, exactly as authored in Kosmos, so the two
+   codebases stay diffable. This is why minAppVersion is 1.5.0.
+
+   Stage 1: palette, semantic tokens, canvas metrics, heading ramp, title.
+   Code blocks, tables, lists, and blockquotes still fall through to
+   Obsidian's defaults, which derive from the tokens set here.
+   ============================================================================= */
+
+/* -----------------------------------------------------------------------------
+   Palette — verbatim from Kosmos palette.css
+   -------------------------------------------------------------------------- */
+body {
+  /* Neutral grays. Note these are truly neutral (chroma 0), not Tailwind's
+     warm "stone" despite sharing the name. */
+  --nc-stone-50: oklch(98.5% 0 none);
+  --nc-stone-75: oklch(97.5% 0 none);
+  --nc-stone-100: oklch(97% 0 none);
+  --nc-stone-125: oklch(95.4% 0 none);
+  --nc-stone-150: oklch(94.7% 0 none);
+  --nc-stone-200: oklch(92.4% 0 none);
+  --nc-stone-300: oklch(86.9% 0 none);
+  --nc-stone-350: oklch(83.5% 0 none);
+  --nc-stone-400: oklch(71.6% 0 none);
+  --nc-stone-500: oklch(55.3% 0 none);
+  --nc-stone-600: oklch(44.4% 0 none);
+  --nc-stone-700: oklch(37.4% 0 none);
+  --nc-stone-800: oklch(26.8% 0 none);
+  --nc-stone-900: oklch(0% 0 none);
+
+  --nc-lime-100: oklch(96.7% 0.066 122.3deg);
+  --nc-lime-600: oklch(64.8% 0.175 131.7deg);
+  --nc-lime-750: oklch(49.3% 0.127 131.3deg);
+  --nc-lime-800: oklch(45.3% 0.113 130.9deg);
+
+  --nc-yellow-100: oklch(97.3% 0.069 103.2deg);
+  --nc-yellow-200: oklch(94.5% 0.124 101.5deg);
+
+  /* Dark ramp — Gruvbox, a Hojicha-inspired warm palette. Deepest base is
+     neutral; surface lifts, text, and borders carry warmth. The accent green
+     shifts from cool lime to a softer yellow-green (~138deg). */
+  --nc-gb-dark: oklch(27.7% 0 263deg);
+  --nc-gb-dark-soft: oklch(31.1% 0.003 48deg);
+  --nc-gb-dark1: oklch(34.4% 0.007 48deg);
+  --nc-gb-dark2: oklch(41.1% 0.011 52deg);
+  --nc-gb-dark3: oklch(48.2% 0.018 61deg);
+  --nc-gb-dark4: oklch(55.1% 0.023 63deg);
+  --nc-gb-light: oklch(95.6% 0.055 96deg);
+  --nc-gb-light3: oklch(75.6% 0.041 82deg);
+  --nc-gb-light4: oklch(69% 0.035 76deg);
+  --nc-gb-gray: oklch(61.9% 0.029 67deg);
+  --nc-gb-bright-aqua: oklch(75.6% 0.108 138deg);
+  --nc-gb-aqua: oklch(64.5% 0.094 145deg);
+}
+
+/* -----------------------------------------------------------------------------
+   Semantic tokens — Kosmos colors.css, default (light) theme
+   -------------------------------------------------------------------------- */
+.theme-light {
+  --nc-primary: var(--nc-stone-600);
+  --nc-darker: var(--nc-stone-800);
+  --nc-muted: var(--nc-stone-500);
+  --nc-muted-more: var(--nc-stone-400);
+  --nc-link: var(--nc-lime-750);
+  --nc-link-hover: var(--nc-lime-600);
+
+  /* --background-light is the "paper" the canvas is drawn on; --background-body
+     is the darker ground the paper sits against. */
+  --nc-bg-light: var(--nc-stone-50);
+  --nc-bg-medium-light: var(--nc-stone-75);
+  --nc-bg-body: var(--nc-stone-125);
+  --nc-bg-section: var(--nc-stone-150);
+  --nc-bg-control: var(--nc-stone-200);
+  --nc-bg-nav: var(--nc-stone-350);
+  --nc-border-light: var(--nc-stone-200);
+  --nc-border-medium: var(--nc-stone-300);
+  --nc-highlight: var(--nc-yellow-100);
+  --nc-nav-active: var(--nc-lime-800);
+}
+
+.theme-dark {
+  --nc-primary: var(--nc-gb-light4);
+  --nc-darker: var(--nc-gb-light);
+  --nc-muted: var(--nc-gb-gray);
+  --nc-muted-more: var(--nc-gb-dark4);
+  --nc-link: var(--nc-gb-bright-aqua);
+  --nc-link-hover: var(--nc-gb-aqua);
+
+  --nc-bg-light: var(--nc-gb-dark-soft);
+  --nc-bg-medium-light: var(--nc-gb-dark1);
+  --nc-bg-body: var(--nc-gb-dark);
+  --nc-bg-section: var(--nc-gb-dark1);
+  --nc-bg-control: var(--nc-gb-dark1);
+  --nc-bg-nav: var(--nc-gb-dark-soft);
+  --nc-border-light: var(--nc-gb-dark1);
+  --nc-border-medium: var(--nc-gb-dark2);
+  --nc-highlight: var(--nc-yellow-100);
+  --nc-nav-active: var(--nc-gb-light3);
+}
+
+/* -----------------------------------------------------------------------------
+   Obsidian core variables
+   -------------------------------------------------------------------------- */
+.theme-light,
+.theme-dark {
+  --background-primary: var(--nc-bg-light);
+  --background-primary-alt: var(--nc-bg-medium-light);
+  --background-secondary: var(--nc-bg-body);
+  --background-secondary-alt: var(--nc-bg-control);
+  --background-modifier-border: var(--nc-border-medium);
+  --background-modifier-border-hover: var(--nc-border-medium);
+  --background-modifier-border-focus: var(--nc-border-medium);
+
+  --text-normal: var(--nc-primary);
+  --text-muted: var(--nc-muted);
+  --text-faint: var(--nc-muted-more);
+  --text-accent: var(--nc-link);
+  --text-accent-hover: var(--nc-link-hover);
+  --text-highlight-bg: var(--nc-highlight);
+  --link-external-color: var(--nc-link);
+  --link-external-color-hover: var(--nc-link-hover);
+
+  --code-background: var(--nc-bg-section);
+  --code-normal: var(--nc-primary);
+  --table-header-background: var(--nc-bg-control);
+  --table-border-color: var(--nc-border-medium);
+  --hr-color: var(--nc-border-medium);
+  --blockquote-border-color: var(--nc-link);
+  --blockquote-color: var(--nc-muted);
+
+  --nav-item-color-active: var(--nc-nav-active);
+  --nav-item-background-active: var(--nc-bg-control);
+  --titlebar-background: var(--nc-bg-body);
+  --titlebar-background-focused: var(--nc-bg-body);
+}
+
+/* Dark mode — marks stay light (a paper-highlighter look, matching how they'd
+   print), but the ink would otherwise inherit light, so force it dark. */
+.theme-dark .markdown-rendered mark,
+.theme-dark .cm-highlight {
+  color: var(--nc-stone-900);
+}
+
+/* -----------------------------------------------------------------------------
+   Canvas metrics and typography
+   -------------------------------------------------------------------------- */
+.theme-light,
+.theme-dark {
+  --font-text-theme: "Noto Sans", ui-sans-serif, sans-serif;
+  --font-monospace-theme: "JetBrains Mono", "JetBrainsMono Nerd Font",
+    "Fira Code", ui-monospace, monospace;
+
+  /* Kosmos's .note-canvas is 62rem wide less its 3rem gutters; 50rem is that
+     column as it actually reads in the app's three-pane layout. */
+  --file-line-width: 50rem;
+  --file-margins: 3rem;
+
+  /* ProseMirror `> * + * { margin-top: 1.25em }` */
+  --p-spacing: 1.25rem;
+  --p-spacing-empty: 0.25rem;
+  --line-height-normal: 1.75;
+  --line-height-tight: 1.3;
+
+  /* Kosmos radii are a flat 0.25rem, with one larger step */
+  --radius-s: 0.25rem;
+  --radius-m: 0.25rem;
+  --radius-l: 0.75rem;
+
+  --bold-weight: 600;
+  --list-indent: 1.5rem;
+  --list-spacing: 0.5em;
+  --blockquote-border-thickness: 3px;
+  --blockquote-font-style: italic;
+  --blockquote-background-color: transparent;
+  --code-size: 0.875em;
+  --table-header-weight: 500;
+}
+
+/* -----------------------------------------------------------------------------
+   Heading ramp — Kosmos notes-editor.css .ProseMirror h1..h5
+
+   Sizes are em, not the rem Kosmos uses, so they track Obsidian's Appearance
+   font size. The ratios are Kosmos's absolute sizes over its 1.1rem canvas
+   body, so a 17-18px Obsidian font size reproduces the original most exactly.
+
+   The ramp is deliberately flat: h4 lands *below* body size and leans on its
+   weight instead, and h2/h3 carry the hierarchy by hanging into the gutter.
+   -------------------------------------------------------------------------- */
+.theme-light,
+.theme-dark {
+  --h1-size: 1.591em;
+  --h2-size: 1.25em;
+  --h3-size: 1.136em;
+  --h4-size: 0.966em;
+  --h5-size: 0.909em;
+  --h6-size: 0.852em;
+
+  --h1-weight: 500;
+  --h2-weight: 500;
+  --h3-weight: 500;
+  /* 550, not 600: Noto Sans loads as a variable font, so the half-step renders
+     genuinely — enough presence to mark a minor heading at body scale without
+     breaching the 500 weight ceiling the way 600 would. */
+  --h4-weight: 550;
+  --h5-weight: 500;
+  --h6-weight: 500;
+
+  --h1-line-height: 1.3;
+  --h2-line-height: 1.3;
+  --h3-line-height: 1.3;
+  --h4-line-height: 1.3;
+  --h5-line-height: 1.3;
+  --h6-line-height: 1.3;
+
+  --h1-color: var(--nc-primary);
+  --h2-color: var(--nc-primary);
+  --h3-color: var(--nc-primary);
+  --h4-color: var(--nc-primary);
+  --h5-color: var(--nc-primary);
+  --h6-color: var(--nc-muted);
+
+  --heading-spacing: 2rem;
+}
+
+/* Reading view */
+.markdown-rendered h1,
+.markdown-rendered h2,
+.markdown-rendered h3,
+.markdown-rendered h4,
+.markdown-rendered h5,
+.markdown-rendered h6 {
+  letter-spacing: -0.01em;
+  margin-bottom: 1.25rem;
+}
+
+.markdown-rendered h1 { margin-top: 2.5rem; }
+.markdown-rendered h2 { margin-top: 2.25rem; }
+.markdown-rendered h3 { margin-top: 2rem; }
+.markdown-rendered h4 { margin-top: 2rem; }
+.markdown-rendered h5 { margin-top: 1.75rem; }
+.markdown-rendered h6 { margin-top: 1.75rem; }
+
+/* h2 and h3 both hang 1rem into the gutter, aligning with the title outdent
+   (the canvas's signature move); the underline is h2's alone and marks the
+   major section break. The canvas gutter is a constant 3rem, so there is
+   always room for the hang. */
+.markdown-rendered h2 {
+  border-bottom: 1px solid var(--nc-border-medium);
+  margin-left: -1rem;
+  padding-bottom: 0.25rem;
+}
+
+.markdown-rendered h3 {
+  margin-left: -1rem;
+}
+
+/* Live preview — Obsidian spaces headings with padding on the .cm-line rather
+   than margins, so the ramp is restated here instead of inherited. */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header {
+  letter-spacing: -0.01em;
+  padding-bottom: 1.25rem;
+}
+
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-1 { padding-top: 2.5rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2 { padding-top: 2.25rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-3 { padding-top: 2rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-4 { padding-top: 2rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-5 { padding-top: 1.75rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-6 { padding-top: 1.75rem; }
+
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2 {
+  border-bottom: 1px solid var(--nc-border-medium);
+  margin-left: -1rem;
+  padding-bottom: 0.25rem;
+}
+
+/* h2's 1.25rem of breathing room moves to the following line, since the border
+   has claimed the header line's own padding-bottom. */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2 + .cm-line {
+  padding-top: 1.25rem;
+}
+
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-3 {
+  margin-left: -1rem;
+}
+
+/* -----------------------------------------------------------------------------
+   Note title — Kosmos .note-header .note-title-input
+   -------------------------------------------------------------------------- */
+.inline-title {
+  color: var(--nc-primary);
+  font-size: 1.591em;
+  font-weight: 500;
+  letter-spacing: normal;
+  line-height: 1.3;
+  margin-bottom: 1.5rem;
+  margin-left: -1rem;
+}
