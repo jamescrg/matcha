@@ -197,9 +197,10 @@ body {
   --list-indent: 1.5rem;
   /* Obsidian applies --list-spacing as padding on *both* sides of every item
      (and of every .HyperMD-list-line), and padding does not collapse — so the
-     gap between two items is twice this. Half a 1.75 line is 0.875em, hence
-     0.4375em here. Kosmos itself runs tighter, at a collapsed 0.5em margin. */
-  --list-spacing: 0.4375em;
+     gap between two items is twice this. 0.21875em therefore gives 7px, a
+     quarter of the 28px line. That is tighter than Kosmos, which runs a
+     collapsed 0.5em (8px) margin between items. */
+  --list-spacing: 0.21875em;
   --blockquote-border-thickness: 3px;
   --blockquote-font-style: italic;
   --blockquote-background-color: transparent;
