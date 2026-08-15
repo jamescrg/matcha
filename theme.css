@@ -308,21 +308,48 @@ body {
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-5 { padding-top: 1.75rem; }
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-6 { padding-top: 1.75rem; }
 
+/* The gutter hang has to be forced here. Obsidian pins every direct child of
+   .cm-content — so every .cm-line — with
+
+     .markdown-source-view.mod-cm6 .cm-content > * { margin: 0 !important }
+
+   which no amount of specificity gets past; only a competing !important does,
+   and these selectors carry enough weight to win that contest.
+
+   The max-width bump goes with it: .cm-line is capped at --file-line-width, so
+   a bare negative margin would slide the whole line left and leave its right
+   edge a rem short of the body text. Widening by the same rem pins the right
+   edge and lets the outdent come entirely off the left, which is what the
+   unconstrained block in Kosmos does naturally. */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2,
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-3 {
+  margin-left: -1rem !important;
+  max-width: calc(var(--file-line-width) + 1rem);
+}
+
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2 {
   border-bottom: 1px solid var(--nc-border-medium);
-  margin-left: -1rem;
   padding-bottom: 0.25rem;
 }
 
-/* h2's 1.25rem of breathing room moves to the following line, since the border
-   has claimed the header line's own padding-bottom. */
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2 + .cm-line {
+/* h2's 1.25rem of breathing room has to move to the following line, since the
+   border claimed the header line's own padding-bottom.
+
+   The two :not()s are carried over from the Obsidian rule this overrides —
+
+     .cm-s-obsidian .cm-line.HyperMD-header
+       + .cm-line:not(.HyperMD-header):not(:has(>br:only-child))
+       { padding-top: var(--p-spacing-empty) }
+
+   at (0,6,0), which outranks the plain `.HyperMD-header-2 + .cm-line` form.
+   Repeating its shape both wins the cascade and keeps its exclusions: a
+   heading following a heading takes its own padding-top, and a blank line
+   stays tight. */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2
+  + .cm-line:not(.HyperMD-header):not(:has(> br:only-child)) {
   padding-top: 1.25rem;
 }
 
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-3 {
-  margin-left: -1rem;
-}
 
 /* -----------------------------------------------------------------------------
    Note title — Kosmos .note-header .note-title-input
