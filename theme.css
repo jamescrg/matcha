@@ -190,6 +190,26 @@ body {
   /* File explorer and outline both size off .tree-item-self, which reads this;
      Obsidian's default is --font-ui-small (13px) against a 17px canvas. */
   --nav-item-size: var(--font-text-size);
+}
+
+/* Interface fonts follow the text size. Obsidian's desktop UI sizes are fixed
+   px (12/13/15/20 in `body {}`), so the font-size slider moves the canvas and
+   leaves menus, settings, and tabs behind. These are the same stock sizes
+   re-expressed as fractions of the 16px default — at 16px nothing changes; at
+   17px the whole interface steps up with the text. The :not(.is-mobile) guard
+   matters: the mobile app already derives UI sizes from the text size, with
+   more generous touch ratios (0.8/0.937/1.0/1.2) that this block must not
+   override. */
+.theme-light:not(.is-mobile),
+.theme-dark:not(.is-mobile) {
+  --font-ui-smaller: calc(var(--font-text-size) * 0.75);
+  --font-ui-small: calc(var(--font-text-size) * 0.8125);
+  --font-ui-medium: calc(var(--font-text-size) * 0.9375);
+  --font-ui-large: calc(var(--font-text-size) * 1.25);
+}
+
+.theme-light,
+.theme-dark {
 
   --bold-weight: 600;
   --list-indent: 1.5rem;
