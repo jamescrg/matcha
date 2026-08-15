@@ -80,15 +80,29 @@ run() {
   fi
 }
 
-# Refuse to clobber a real file the user may have hand-edited; a symlink we
-# planted ourselves, or a copy of our own file, is fair game.
+# Refuse to clobber a real file the user may have hand-edited. Ours is fair
+# game: a symlink we planted, an identical copy, or a copy that still matches
+# the checksum we recorded when we published it (a stale-but-untouched copy
+# differs from the repo after every edit, so cmp alone can't clear it).
+CHECKSUM_FILE=".publish-checksums"
+
 safe_to_replace() {
   local target="$1" source="$2"
   [[ ! -e "$target" && ! -L "$target" ]] && return 0
   [[ -L "$target" ]] && return 0
   (( FORCE )) && return 0
   cmp -s "$target" "$source" && return 0
+  local recorded
+  recorded=$(grep -s "  ${target##*/}\$" "${target%/*}/$CHECKSUM_FILE" | cut -d' ' -f1)
+  [[ -n "$recorded" && "$recorded" == "$(sha256sum "$target" | cut -d' ' -f1)" ]] && return 0
   return 1
+}
+
+record_checksum() {
+  local target="$1" dir="${1%/*}" name="${1##*/}"
+  grep -sv "  $name\$" "$dir/$CHECKSUM_FILE" > "$dir/$CHECKSUM_FILE.tmp" || true
+  sha256sum "$target" | { read -r hash _; echo "$hash  $name"; } >> "$dir/$CHECKSUM_FILE.tmp"
+  mv "$dir/$CHECKSUM_FILE.tmp" "$dir/$CHECKSUM_FILE"
 }
 
 published=0
@@ -116,6 +130,7 @@ for vault in "$VAULT_ROOT"/*/; do
     else
       run rm -f "$dest/$f"
       run cp "$REPO_DIR/$f" "$dest/$f"
+      (( DRY )) || record_checksum "$dest/$f"
     fi
   done
 
