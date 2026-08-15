@@ -27,6 +27,8 @@
       <div class="el-p"><p id="rv-p4">Paragraph after the h3.</p></div>
       <div class="el-h4"><h4 id="rv-h4">H4 heading</h4></div>
       <div class="el-p"><p id="rv-p5">Paragraph after the h4.</p></div>
+      <div class="el-h2"><h2 id="rv-u2">Underlined h2</h2></div>
+      <div class="el-h3"><h3 id="rv-u3">h3 under the rule</h3></div>
       <div class="el-h3"><h3 id="rv-adj3">Adjacent h3</h3></div>
       <div class="el-h4"><h4 id="rv-adj4">Adjacent h4</h4></div>
       <div class="el-p"><p id="rv-adjp">Paragraph after the pair.</p></div>
@@ -65,6 +67,13 @@
         <div class="cm-line HyperMD-header HyperMD-header-4" id="lp-h4">H4 heading</div>
         <div class="cm-line"><br></div>
         <div class="cm-line" id="lp-p5">Paragraph after the h4.</div>
+        <div class="cm-line"><br></div>
+        <div class="cm-line HyperMD-header HyperMD-header-2" id="lp-u2">Underlined h2</div>
+        <div class="cm-line HyperMD-header HyperMD-header-3" id="lp-u3">h3 under the rule</div>
+        <div class="cm-line"><br></div>
+        <div class="cm-line HyperMD-header HyperMD-header-2" id="lp-ub2">Underlined h2 blank</div>
+        <div class="cm-line"><br></div>
+        <div class="cm-line HyperMD-header HyperMD-header-3" id="lp-ub3">h3 blank under rule</div>
         <div class="cm-line"><br></div>
         <div class="cm-line HyperMD-header HyperMD-header-3" id="lp-adj3">Adjacent h3</div>
         <div class="cm-line HyperMD-header HyperMD-header-4" id="lp-adj4">Adjacent h4</div>
@@ -111,6 +120,7 @@ addEventListener('load', () => {
   gap('h3 -> p4', 'rv-h3', 'rv-p4');
   gap('p4 -> h4', 'rv-p4', 'rv-h4');
   gap('h4 -> p5', 'rv-h4', 'rv-p5');
+  gap('h2 -> h3 (adj)', 'rv-u2', 'rv-u3');
   gap('adj h3 -> h4', 'rv-adj3', 'rv-adj4');
   gap('li1 -> li2', 'rv-li1', 'rv-li2');
   gap('li2 -> li3', 'rv-li2', 'rv-li3');
@@ -126,6 +136,8 @@ addEventListener('load', () => {
   gap('h3 -> p4', 'lp-h3', 'lp-p4');
   gap('p4 -> h4', 'lp-p4', 'lp-h4');
   gap('h4 -> p5', 'lp-h4', 'lp-p5');
+  gap('h2 -> h3 (adj)', 'lp-u2', 'lp-u3');
+  gap('h2 -> h3 (blank)', 'lp-ub2', 'lp-ub3');
   gap('adj h3 -> h4', 'lp-adj3', 'lp-adj4');
   gap('blank h3 -> h4', 'lp-blank3', 'lp-blank4');
   gap('li1 -> li2', 'lp-li1', 'lp-li2');

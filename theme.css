@@ -315,6 +315,18 @@ body {
   margin-top: 0;
 }
 
+/* …except under an h2, whose underline sits 0.25rem below its text and eats
+   into the perceived gap — a heading right under the rule needs a bit more
+   air than one under bare text. 1.5rem out-collapses h2's 1.25rem
+   margin-bottom, landing the pair at 28px text-to-text. */
+.markdown-rendered h2 + :is(h1, h2, h3, h4, h5, h6),
+.markdown-rendered
+  .el-h2
+  + :is(.el-h1, .el-h2, .el-h3, .el-h4, .el-h5, .el-h6)
+  > :is(h1, h2, h3, h4, h5, h6) {
+  margin-top: 1.5rem;
+}
+
 /* h2 and h3 both hang 1rem into the gutter, aligning with the title outdent
    (the canvas's signature move); the underline is h2's alone and marks the
    major section break. The canvas gutter is a constant 3rem, so there is
@@ -393,6 +405,21 @@ body {
    here — see the !important note above.) */
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header {
   padding-top: 1rem;
+}
+
+/* …except under an h2, matching the reading-view exception above: the
+   underline eats 0.25rem of the perceived gap, so the follower gets 0.5rem
+   more. Two paths to cover — directly adjacent lines, and the blank-line
+   form, where Obsidian's own (0,7,1) rule zeroes the follower's padding-top
+   and the extra :has() step here is what outranks it. Both land at 28px. */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2 + .cm-line.HyperMD-header {
+  padding-top: 1.5rem;
+}
+
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2
+  + .cm-line:has(> br:only-child)
+  + .cm-line.HyperMD-header {
+  padding-top: 0.5rem;
 }
 
 /* -----------------------------------------------------------------------------
