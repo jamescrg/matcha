@@ -153,9 +153,22 @@ body {
    -------------------------------------------------------------------------- */
 .theme-light,
 .theme-dark {
-  --font-text-theme: "Noto Sans", ui-sans-serif, sans-serif;
+  /* Inter, not the Noto Sans that Kosmos serves from Google Fonts. Obsidian
+     bundles Inter inside the app as a single variable face spanning
+     `font-weight: 100 900`, so it is present on every device with nothing to
+     install and it can render the half-steps this ramp depends on. A locally
+     installed Noto Sans usually cannot: the common packaging (Debian's
+     fonts-noto-core, for one) ships only Regular and Bold, which collapses
+     500 to 400 and rounds 550 up to 700 — inverting h3 and h4.
+
+     Naming Inter explicitly rather than leaning on --font-default matters:
+     that stack opens with ui-sans-serif/system-ui, which resolves to a system
+     face long before reaching Inter, and that face may have the same problem. */
+  --font-text-theme: "Inter Variable", "Inter", ui-sans-serif, sans-serif;
+  /* Source Code Pro is likewise bundled, so it backs up JetBrains Mono
+     everywhere. Code needs no half-steps, so its static faces are fine. */
   --font-monospace-theme: "JetBrains Mono", "JetBrainsMono Nerd Font",
-    "Fira Code", ui-monospace, monospace;
+    "Source Code Pro", ui-monospace, monospace;
 
   /* Kosmos's .note-canvas is 62rem wide less its 3rem gutters; 50rem is that
      column as it actually reads in the app's three-pane layout. */
@@ -208,7 +221,7 @@ body {
   --h1-weight: 500;
   --h2-weight: 500;
   --h3-weight: 500;
-  /* 550, not 600: Noto Sans loads as a variable font, so the half-step renders
+  /* 550, not 600: the text face is variable, so the half-step renders
      genuinely — enough presence to mark a minor heading at body scale without
      breaching the 500 weight ceiling the way 600 would. */
   --h4-weight: 550;

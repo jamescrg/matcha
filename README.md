@@ -28,9 +28,21 @@ editing this repo updates every vault with no republish step. See
 
 ## Font
 
-The theme asks for **Noto Sans**, with a system sans fallback. Install it for
-the intended look — on Debian/Ubuntu, `apt install fonts-noto`. Code blocks
-want JetBrains Mono.
+Nothing to install, on any device. The theme sets **Inter**, which Obsidian
+bundles inside the app as one variable face spanning `font-weight: 100 900`.
+
+That matters because the heading ramp is carried by weight as much as by size:
+h2 and h3 sit at 500 and h4 at 550, a half-step that only a variable font can
+render. Kosmos gets this by serving Noto Sans from Google Fonts, which returns
+the variable build. A *locally installed* Noto Sans generally cannot — Debian's
+`fonts-noto-core`, for instance, ships only Regular and Bold, so 500 collapses
+to 400 and 550 rounds up to 700, leaving h4 heavier than the h2 above it.
+
+So this is a deliberate substitution: Inter for Noto Sans, to keep Kosmos's
+actual weights working everywhere rather than degrade the ramp to 400/700.
+
+Code blocks prefer JetBrains Mono and fall back to Source Code Pro, which
+Obsidian also bundles.
 
 Kosmos draws its canvas at `1.1rem`. Heading sizes here are `em`-based so they
 track Obsidian's own font-size setting, which means **Settings → Appearance →
