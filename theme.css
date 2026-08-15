@@ -486,3 +486,21 @@ body {
     max-width: var(--file-line-width);
   }
 }
+
+/* -----------------------------------------------------------------------------
+   Phone font size
+
+   Appearance sync pushes one baseFontSize to every device, and 17px tuned
+   for a desktop monitor is too small at phone distance. The theme pins the
+   phone size instead, so sync can stay on. body.is-phone exists only in the
+   mobile app on phones — tablets and narrow desktop panes keep the synced
+   size. !important is required: Obsidian writes the user's font-size setting
+   as an inline style, which only an important author rule outranks.
+
+   THE KNOB: change 19px here to resize text on phones. The trade-off is that
+   the phone's own Settings → Appearance → Font size slider has no effect
+   while this rule stands. Headings, title, and nav all scale with it.
+   -------------------------------------------------------------------------- */
+body.is-phone {
+  --font-text-size: 19px !important;
+}
