@@ -101,7 +101,11 @@ body {
   --nc-bg-nav: var(--nc-gb-dark-soft);
   --nc-border-light: var(--nc-gb-dark1);
   --nc-border-medium: var(--nc-gb-dark2);
-  --nc-highlight: var(--nc-yellow-100);
+  /* A dim amber wash, not Kosmos's paper-bright yellow-100. Kosmos keeps
+     marks light in dark mode for print fidelity, but on a true dark canvas
+     that reads as glare; light text on a low-lightness amber keeps the
+     "marked" signal at the page's own brightness. */
+  --nc-highlight: oklch(42% 0.07 95deg);
   --nc-nav-active: var(--nc-gb-light3);
 }
 
@@ -141,12 +145,6 @@ body {
   --titlebar-background-focused: var(--nc-bg-body);
 }
 
-/* Dark mode — marks stay light (a paper-highlighter look, matching how they'd
-   print), but the ink would otherwise inherit light, so force it dark. */
-.theme-dark .markdown-rendered mark,
-.theme-dark .cm-highlight {
-  color: var(--nc-stone-900);
-}
 
 /* -----------------------------------------------------------------------------
    Canvas metrics and typography
@@ -451,4 +449,40 @@ body {
 /* The title input in Kosmos sets no tracking. */
 .inline-title:not([data-level]) {
   letter-spacing: normal;
+}
+
+/* -----------------------------------------------------------------------------
+   Narrow viewports (phones; also skinny desktop panes)
+
+   The gutter hang assumes a canvas with margin to spare. On a phone every
+   horizontal rem is contested — the hang forces the text column to reserve
+   a gutter it can barely afford, and stacked on the list indent it leaves
+   list items squeezed against the right edge. Below the cutoff the canvas
+   flattens: headings and title sit flush with body text (hierarchy falls to
+   size, weight, and the h2 rule), margins pull in, and lists indent less.
+
+   Kosmos never faces this; it is a desktop app. The cutoff is viewport-based
+   rather than keyed to Obsidian's .is-phone class so a narrow desktop pane
+   gets the same relief.
+   -------------------------------------------------------------------------- */
+@media (max-width: 600px) {
+  .theme-light,
+  .theme-dark {
+    --file-margins: 1.25rem;
+    --list-indent: 1.25rem;
+  }
+
+  .inline-title,
+  .markdown-rendered :is(h1, h2, h3) {
+    margin-left: 0;
+  }
+
+  /* Same !important contest as the hang itself — later source order wins
+     the tie against the desktop rule above. */
+  .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-1,
+  .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2,
+  .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-3 {
+    margin-left: 0 !important;
+    max-width: var(--file-line-width);
+  }
 }
