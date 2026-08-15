@@ -475,6 +475,27 @@ body {
 }
 
 /* -----------------------------------------------------------------------------
+   Dropdown option lists (Settings → Appearance and friends)
+
+   The popup list of a native <select> is painted by Chromium, not Obsidian:
+   app.css styles the closed .dropdown control but never the <option> rows,
+   so the checked row gets the browser's hardcoded selection blue and no
+   Obsidian variable reaches it. Chromium honors author colors on <option>
+   in the popup on Linux and Windows; macOS pops a native OS menu and
+   ignores all of this (there the highlight is at least the system accent).
+
+   The background goes through a gradient because Chromium's UA sheet sets
+   the checked row's background-color with !important; a background-image
+   layers over it. The pairing is the theme's standing "selected" treatment —
+   the same control-gray fill and nav-active green the file explorer's
+   active item wears. */
+.dropdown option:checked,
+.dropdown option:hover {
+  background: linear-gradient(var(--nc-bg-control), var(--nc-bg-control));
+  color: var(--nc-nav-active);
+}
+
+/* -----------------------------------------------------------------------------
    Narrow viewports (phones; also skinny desktop panes)
 
    The gutter hang assumes a canvas with margin to spare. On a phone every
