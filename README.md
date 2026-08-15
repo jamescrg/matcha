@@ -1,4 +1,4 @@
-# Note Canvas
+# Matcha
 
 An Obsidian theme ported from the note canvas in
 [Kosmos](https://github.com/Kosmos-Law/kosmos) — a paper-page reading surface
@@ -18,13 +18,13 @@ yellow-green.
 ```
 
 That symlinks `theme.css` and `manifest.json` into
-`<vault>/.obsidian/themes/Note Canvas/` for each vault under `~/Obsidian`, so
+`<vault>/.obsidian/themes/Matcha/` for each vault under `~/Obsidian`, so
 editing this repo updates every vault with no republish step. See
 `./publish.sh --help` for `--copy` (for synced vaults), `--dry-run`, and
 `--vaults DIR`.
 
 **Manually:** copy `theme.css` and `manifest.json` into
-`<vault>/.obsidian/themes/Note Canvas/`, then Settings → Appearance → Themes.
+`<vault>/.obsidian/themes/Matcha/`, then Settings → Appearance → Themes.
 
 ## Font
 

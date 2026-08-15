@@ -1,4 +1,4 @@
-# Note Canvas Test
+# Matcha Test
 
 This note exercises everything the theme currently styles. Read it in both
 Live Preview and Reading view (`Ctrl+E` toggles), and in both light and dark

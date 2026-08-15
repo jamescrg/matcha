@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Publish the Note Canvas theme into every Obsidian vault under $VAULT_ROOT.
+# Publish the Matcha theme into every Obsidian vault under $VAULT_ROOT.
 #
 # Default mode is --link, which symlinks theme.css and manifest.json out of
 # this repo. Edits here then show up in every vault with no republish step
@@ -11,7 +11,7 @@
 
 set -euo pipefail
 
-THEME_NAME="Note Canvas"
+THEME_NAME="Matcha"
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 VAULT_ROOT="${OBSIDIAN_VAULT_ROOT:-$HOME/Obsidian}"
 FILES=(theme.css manifest.json)
