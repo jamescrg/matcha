@@ -23,7 +23,12 @@ FORCE=0
 
 usage() {
   cat <<EOF
-Usage: ${0##*/} [options]
+Usage: ${0##*/} [options] [VAULT...]
+
+Publishes to every vault under the vault root, or only to the named ones:
+
+  ./${0##*/} Recipes            just that vault
+  ./${0##*/} Recipes Writing    just those two
 
   --link          symlink into each vault (default; live updates)
   --copy          copy into each vault (for synced vaults)
@@ -38,6 +43,8 @@ appearance.json from memory on exit and undo the change.
 EOF
 }
 
+ONLY=()
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --link)     MODE=link ;;
@@ -47,10 +54,18 @@ while [[ $# -gt 0 ]]; do
     --force)    FORCE=1 ;;
     --vaults)   VAULT_ROOT="${2:?--vaults needs a directory}"; shift ;;
     -h|--help)  usage; exit 0 ;;
-    *)          echo "unknown option: $1" >&2; usage >&2; exit 2 ;;
+    -*)         echo "unknown option: $1" >&2; usage >&2; exit 2 ;;
+    *)          ONLY+=("$1") ;;
   esac
   shift
 done
+
+wanted() {
+  (( ${#ONLY[@]} == 0 )) && return 0
+  local v
+  for v in "${ONLY[@]}"; do [[ "$v" == "$1" ]] && return 0; done
+  return 1
+}
 
 for f in "${FILES[@]}"; do
   [[ -f "$REPO_DIR/$f" ]] || { echo "missing $REPO_DIR/$f" >&2; exit 1; }
@@ -83,6 +98,7 @@ shopt -s nullglob
 for vault in "$VAULT_ROOT"/*/; do
   [[ -d "$vault/.obsidian" ]] || continue
   name="$(basename "$vault")"
+  wanted "$name" || continue
   dest="$vault.obsidian/themes/$THEME_NAME"
 
   echo "$name"
@@ -125,6 +141,16 @@ PY
 
   if (( vault_ok )); then published=$((published + 1)); else skipped=$((skipped + 1)); fi
 done
+
+if (( published == 0 && skipped == 0 )); then
+  echo "no matching vaults under $VAULT_ROOT" >&2
+  if (( ${#ONLY[@]} )); then
+    echo "asked for: ${ONLY[*]}" >&2
+    echo "available: $(cd "$VAULT_ROOT" && for d in */; do
+      [[ -d "$d/.obsidian" ]] && printf '%s ' "${d%/}"; done)" >&2
+  fi
+  exit 1
+fi
 
 echo
 summary="$MODE: $published vault(s) published"
