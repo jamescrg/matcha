@@ -283,7 +283,11 @@ body {
 .markdown-rendered h1 { --heading-spacing: 2.5rem; }
 .markdown-rendered h2 { --heading-spacing: 2.25rem; }
 .markdown-rendered h3 { --heading-spacing: 2rem; }
-.markdown-rendered h4 { --heading-spacing: 2rem; }
+/* h4 takes more room above it than h3, which looks like an inversion and is
+   not. h2 and h3 announce themselves by hanging into the gutter; h4 sits flush
+   in the text column with only a 3px size step over body copy, so the space
+   above is the whole of its separation. */
+.markdown-rendered h4 { --heading-spacing: 2.25rem; }
 .markdown-rendered h5 { --heading-spacing: 1.75rem; }
 .markdown-rendered h6 { --heading-spacing: 1.75rem; }
 
@@ -336,7 +340,7 @@ body {
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-1 { padding-top: 1.5rem; }
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2 { padding-top: 1.25rem; }
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-3 { padding-top: 1rem; }
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-4 { padding-top: 1rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-4 { padding-top: 1.25rem; }
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-5 { padding-top: 0.75rem; }
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-6 { padding-top: 0.75rem; }
 
@@ -370,7 +374,7 @@ body {
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-1 { padding-top: 2.5rem; }
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-2 { padding-top: 2.25rem; }
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-3 { padding-top: 2rem; }
-.markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-4 { padding-top: 2rem; }
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-4 { padding-top: 2.25rem; }
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-5 { padding-top: 1.75rem; }
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header + .cm-line.HyperMD-header-6 { padding-top: 1.75rem; }
 
