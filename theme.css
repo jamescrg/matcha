@@ -195,6 +195,11 @@ body {
 
   --bold-weight: 600;
   --list-indent: 1.5rem;
+  /* Bullets carry the text ink, as they do in Kosmos, whose li markers
+     inherit color-primary. Obsidian's default is --text-faint, which reads
+     washed out at this size. Color only — the marker's position and metrics
+     stay Obsidian's. */
+  --list-marker-color: var(--nc-primary);
   /* Obsidian applies --list-spacing as padding on *both* sides of every item
      (and of every .HyperMD-list-line), and padding does not collapse — so the
      gap between two items is twice this. 0.21875em therefore gives 7px, a
