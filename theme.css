@@ -343,18 +343,6 @@ body {
   margin-top: 0;
 }
 
-/* …except under an h2, whose underline sits 0.25rem below its text and eats
-   into the perceived gap — a heading right under the rule needs a bit more
-   air than one under bare text. 1.5rem out-collapses h2's 1.25rem
-   margin-bottom, landing the pair at 28px text-to-text. */
-.markdown-rendered h2 + :is(h1, h2, h3, h4, h5, h6),
-.markdown-rendered
-  .el-h2
-  + :is(.el-h1, .el-h2, .el-h3, .el-h4, .el-h5, .el-h6)
-  > :is(h1, h2, h3, h4, h5, h6) {
-  margin-top: 1.5rem;
-}
-
 /* h2 and h3 both hang 1rem into the gutter, aligning with the title outdent
    (the canvas's signature move); the underline is h2's alone and marks the
    major section break. The canvas gutter is a constant 3rem, so there is
@@ -366,6 +354,15 @@ body {
 .markdown-rendered h2 {
   border-bottom: 1px solid var(--nc-border-medium);
   padding-bottom: 0.25rem;
+  /* The underline sits 0.25rem below the text and reads as part of the
+     heading, so a standard 1.25rem gap under it feels clipped. 0.25rem of
+     this gives that padding back; the other 0.25rem is tuned by eye — the
+     rule draws a hard edge that wants more clearance than bare text does.
+     It applies to everything that follows, prose included. Collapsing
+     against a follower whose margin-top the adjacent-heading rule zeroed,
+     it also single-handedly supplies the 32px a heading under an h2 gets,
+     which used to take a separate exception rule. */
+  margin-bottom: 1.75rem;
 }
 
 /* Live preview.
@@ -380,7 +377,9 @@ body {
    paragraphs (`.ProseMirror > p:has(> br:only-child) { line-height: 1 }`).
    Doing that here leaves a blank line 1rem tall, so every value below is its
    reading-view counterpart less that 1rem, and the two views land on the same
-   measurement: 40 / 36 / 32 / 32 / 28px above, 20px below.
+   measurement: 40 / 36 / 32 / 32 / 28px above, 20px below (28px below an
+   h2, whose underline earns the section extra clearance — see the follower
+   rule past the border).
 
    Written with no blank line above it, a heading loses that 1rem — the ramp
    still reads, just tighter. */
@@ -425,6 +424,15 @@ body {
   border-bottom: 1px solid var(--nc-border-medium);
 }
 
+/* Reading view's extra 0.5rem below the underline, restated for the editor.
+   Margin is off the table (see the !important note above), and more
+   padding-bottom on the h2 line would land above the border — so the line
+   after the h2 carries it instead, blank or not. The header-follower rules
+   below are more specific and keep their own figures. */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2 + .cm-line {
+  padding-top: 0.5rem;
+}
+
 /* Adjacent headings: one text-gap, matching reading view's collapsed margin.
    0.25rem padding-bottom on the line above + 1rem here = 1.25rem = 20px.
    Obsidian's own rule already zeroes the padding-top of a heading that
@@ -435,19 +443,21 @@ body {
   padding-top: 1rem;
 }
 
-/* …except under an h2, matching the reading-view exception above: the
-   underline eats 0.25rem of the perceived gap, so the follower gets 0.5rem
-   more. Two paths to cover — directly adjacent lines, and the blank-line
-   form, where Obsidian's own (0,7,1) rule zeroes the follower's padding-top
-   and the extra :has() step here is what outranks it. Both land at 28px. */
+/* …except under an h2, matching reading view: the underline earns extra
+   clearance, putting the pair at 32px rather than 20. Two paths to cover —
+   directly adjacent lines, and the blank-line form, where Obsidian's own
+   (0,7,1) rule zeroes the follower's padding-top and the extra :has() step
+   here is what outranks it. In the blank-line form the blank already
+   carries 0.5rem from the follower rule above, so 0.25rem more lands the
+   same 32px. */
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2 + .cm-line.HyperMD-header {
-  padding-top: 1.5rem;
+  padding-top: 1.75rem;
 }
 
 .markdown-source-view.mod-cm6 .cm-line.HyperMD-header-2
   + .cm-line:has(> br:only-child)
   + .cm-line.HyperMD-header {
-  padding-top: 0.5rem;
+  padding-top: 0.25rem;
 }
 
 /* -----------------------------------------------------------------------------
