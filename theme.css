@@ -223,10 +223,12 @@ body {
   --list-marker-color: var(--nc-primary);
   /* Obsidian applies --list-spacing as padding on *both* sides of every item
      (and of every .HyperMD-list-line), and padding does not collapse — so the
-     gap between two items is twice this. 0.21875em therefore gives 7px, a
-     quarter of the 28px line. That is tighter than Kosmos, which runs a
-     collapsed 0.5em (8px) margin between items. */
-  --list-spacing: 0.21875em;
+     gap between two items is twice this. 0.09375em therefore gives 3px at a
+     16px base — a near-solid block, well inside Kosmos's collapsed 0.5em
+     (8px) margin between items. The value is awkward because it targets a
+     round pixel count, but em keeps it tracking the per-device font sizes
+     rather than freezing one device's gap. */
+  --list-spacing: 0.09375em;
   --blockquote-border-thickness: 3px;
   --blockquote-font-style: italic;
   --blockquote-background-color: transparent;
